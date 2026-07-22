@@ -1,4 +1,4 @@
-# Task Management App (Interview Assignment)
+# Task Management App 
 
 Simple full-stack Task Management App with authentication and task CRUD.
 
