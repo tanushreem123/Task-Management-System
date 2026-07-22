@@ -12,7 +12,7 @@ const createToken = (userId: string, email: string): string =>
 
 const cookieOptions = {
   httpOnly: true,
-  sameSite: "lax" as const,
+  sameSite: (config.nodeEnv === "production" ? "none" : "lax") as "none" | "lax",
   secure: config.nodeEnv === "production",
   maxAge: 24 * 60 * 60 * 1000,
 };
@@ -103,7 +103,7 @@ router.post("/login", async (req, res, next) => {
 router.post("/logout", (_req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: config.nodeEnv === "production" ? "none" : "lax",
     secure: config.nodeEnv === "production",
   });
   res.json({ message: "Logout successful" });
