@@ -1,6 +1,13 @@
-# Task Management App 
+# Task Management App
 
 Simple full-stack Task Management App with authentication and task CRUD.
+
+## Live Demo
+
+- Frontend: https://task-management-system-blush-five.vercel.app
+- Backend API: https://task-management-system-y3u3.onrender.com
+
+The backend runs on Render's free tier and spins down after inactivity, so the first request after a while can take up to ~50s to wake it up.
 
 ## Stack
 
@@ -228,6 +235,22 @@ To stop MongoDB Community service:
 ```bash
 brew services stop mongodb-community@7.0
 ```
+
+## Deployment
+
+- **Frontend** is deployed on [Vercel](https://vercel.com), root directory `frontend`, framework preset Next.js.
+- **Backend** is deployed on [Render](https://render.com) as a Web Service, root directory `backend`.
+  - Build command: `npm install --include=dev && npm run build` (Render skips `devDependencies` — which include `typescript` and the `@types/*` packages needed to compile — whenever `NODE_ENV=production` is set, so they must be forced in explicitly).
+  - Start command: `npm start`
+  - Render is connected via the public repo URL rather than the GitHub App, so pushes to `main` do **not** auto-deploy the backend — trigger "Deploy latest commit" manually from the Render dashboard after backend changes.
+- **Database** is a shared MongoDB Atlas cluster, with a dedicated `taskmgmt_app` user scoped to the `task_management_system` database.
+
+### Environment variables in production
+
+Same keys as local (`MONGODB_URI`, `JWT_SECRET`, `CLIENT_ORIGIN`, `NODE_ENV` on the backend; `NEXT_PUBLIC_API_URL` on the frontend), with two differences from local dev:
+
+- `CLIENT_ORIGIN` (backend) and `NEXT_PUBLIC_API_URL` (frontend) point at each other's deployed URLs instead of `localhost`.
+- The auth cookie's `SameSite` attribute is `None` in production instead of `Lax`, since the frontend (Vercel) and backend (Render) are on different domains — cross-site requests won't carry a `Lax` cookie. See `backend/src/routes/auth.ts`.
 
 ## API Endpoints
 
